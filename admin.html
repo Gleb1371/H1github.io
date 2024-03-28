@@ -222,6 +222,84 @@
                 });
             });
         </script>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="form">
+                        <h3 class="text-center">Очистить данные о клиентах (занятия)</h3>
+                        <form id="deleteLessonsForm" action="#" method="POST">
+                            <div class="mb-3">
+                                <input type="password" id="deleteLessonsAdminpassword" name="password" class="form-control" placeholder="Введите пароль">
+                            </div>
+                            <button type="submit" class="btn btn-danger d-block mx-auto" disabled>Очистить</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form">
+                        <h3 class="text-center">Очистить данные о клиентах (поездки)</h3>
+                        <form id="deleteTripsForm" action="#" method="POST">
+                            <div class="mb-3">
+                                <input type="password" id="deleteTripsAdminpassword" name="password" class="form-control" placeholder="Введите пароль">
+                            </div>
+                            <button type="submit" class="btn btn-danger d-block mx-auto" disabled>Очистить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>      
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const admins = JSON.parse(localStorage.getItem('admins')) || [];
+        
+                // Функция для проверки пароля администратора
+                function checkAdminPassword(enteredPassword) {
+                    return admins.some(admin => admin.password === enteredPassword);
+                }
+        
+                // Обработчик ввода пароля администратора (занятия)
+                document.getElementById('deleteLessonsAdminpassword').addEventListener('input', function() {
+                    const button = document.querySelector('#deleteLessonsForm button[type="submit"]');
+                    button.disabled = !checkAdminPassword(this.value.trim());
+                });
+        
+                // Обработчик ввода пароля администратора (поездки)
+                document.getElementById('deleteTripsAdminpassword').addEventListener('input', function() {
+                    const button = document.querySelector('#deleteTripsForm button[type="submit"]');
+                    button.disabled = !checkAdminPassword(this.value.trim());
+                });
+        
+                // Обработчик отправки формы для удаления данных о клиентах (занятия)
+                document.getElementById('deleteLessonsForm').addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const enteredPassword = document.getElementById('deleteLessonsAdminpassword').value.trim();
+        
+                    // Проверяем совпадение введенного пароля с паролями администраторов
+                    if (checkAdminPassword(enteredPassword)) {
+                        // Если пароль правильный, то очищаем данные о клиентах (занятия)
+                        localStorage.removeItem('classes');
+                        alert('Данные о клиентах (занятия) успешно удалены.');
+                    } else {
+                        alert('Неправильный пароль администратора.');
+                    }
+                });
+        
+                // Обработчик отправки формы для удаления данных о клиентах (поездки)
+                document.getElementById('deleteTripsForm').addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const enteredPassword = document.getElementById('deleteTripsAdminpassword').value.trim();
+        
+                    // Проверяем совпадение введенного пароля с паролями администраторов
+                    if (checkAdminPassword(enteredPassword)) {
+                        // Если пароль правильный, то очищаем данные о клиентах (поездки)
+                        localStorage.removeItem('trips');
+                        alert('Данные о клиентах (поездки) успешно удалены.');
+                    } else {
+                        alert('Неправильный пароль администратора.');
+                    }
+                });
+            });
+        </script>
         <footer class="container-fluid foot1">
         <div class="row">
             <div class="col-sm-4 col-4">
