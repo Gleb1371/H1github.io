@@ -112,6 +112,7 @@
                                 if (!clients[name]) {
                                     // Если нет, добавляем их
                                     clients[name] = phone;
+                                    // Сохраняем данные в Local Storage
                                     localStorage.setItem("clients", JSON.stringify(clients));
                                 } else {
                                     alertDiv.textContent = "Данные уже существуют!";
