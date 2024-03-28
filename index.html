@@ -74,11 +74,11 @@
                     const phoneInput = document.getElementById('phone'); 
                 
                     // Проверяем, есть ли уже сохраненные данные в Local Storage
-                    let clients = localStorage.getItem("clients");
-                    if (!clients) {
-                        clients = {};
+                    let classes = localStorage.getItem("classes");
+                    if (!classes) {
+                        classes = {};
                     } else {
-                        clients = JSON.parse(clients);
+                        classes = JSON.parse(classes);
                     }
                 
                     form.addEventListener("click", function (event) {
@@ -108,12 +108,11 @@
                                 alertDiv.textContent = "Спасибо, мы вам перезвоним!";
                                 alertDiv.classList.add('blue');
                 
-                                // Проверяем, существуют ли уже такие данные в объекте clients
-                                if (!clients[name]) {
-                                    // Если нет, добавляем их
-                                    clients[name] = phone;
+                                // Проверяем, существуют ли уже такие данные в объекте classes
+                                if (!classes[name]) {
+                                    classes[name] = phone;
                                     // Сохраняем данные в Local Storage
-                                    localStorage.setItem("clients", JSON.stringify(clients));
+                                    localStorage.setItem("classes", JSON.stringify(classes));
                                 } else {
                                     alertDiv.textContent = "Данные уже существуют!";
                                     alertDiv.classList.add('red');
@@ -125,7 +124,7 @@
                             }, 3000);
                         }
                     });
-                </script>
+                </script> 
             </div>
         </div>
     </div>
@@ -203,11 +202,11 @@
                             var phoneInput = document.getElementById('phoneModal');
                             var submitBtn = document.getElementById('submitBtn');
                             // Проверяем, есть ли уже сохраненные данные в Local Storage
-                            let clients = localStorage.getItem("clients");
-                            if (!clients) {
-                                clients = {};
+                            let trips = localStorage.getItem("trips");
+                            if (!trips) {
+                                trips = {};
                             } else {
-                                clients = JSON.parse(clients);
+                                trips = JSON.parse(trips);
                             }
                             modalBtn.addEventListener("click", function() {
                                 modal.style.display = "block";
@@ -234,10 +233,10 @@
                                     } else {
                                         errorAlert.textContent = ""; // Очистить сообщение об ошибке при вводе корректных данных
                                         successAlert.textContent = "Спасибо, мы вам перезвоним!";
-                                        // Проверяем, существуют ли уже такие данные в объекте clients
-                                        if (!clients[name]) {
-                                            clients[name] = phone;
-                                            localStorage.setItem("clients", JSON.stringify(clients));
+                                        // Проверяем, существуют ли уже такие данные в объекте trips
+                                        if (!trips[name]) {
+                                            trips[name] = phone;
+                                            localStorage.setItem("trips", JSON.stringify(trips));
                                         } else {
                                             successAlert.textContent = "Данные уже существуют!";
                                         }
@@ -245,7 +244,7 @@
                                 }
                             });
                         });
-                    </script>
+                    </script> 
                 </article>
             </div>
             <div class="col-lg-5 col-12 offset-lg-1">
