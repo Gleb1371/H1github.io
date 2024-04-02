@@ -33,7 +33,7 @@ body {
     font-size: 20px;
     font-weight: 600;
 }
-@media screen and (min-width: 992px) and (max-width: 1399px){
+@media screen and (min-width: 992px) and (max-width: 1030px){
     .container a {
         font-size: 16px;
         padding-right: 2em; 
@@ -44,6 +44,17 @@ body {
     .sh img {
         width: 60px;
         height: 60px;
+    }
+    .form img {
+        margin-top: 2em;
+        margin-bottom: 1em;
+        width: 280px;
+        height: 200px;
+    }
+    .form .one{
+        margin-top: 0;
+        width: 240px;
+        height: 280px;
     }
 }
 @media screen and (min-width: 768px) and (max-width: 991px){
@@ -78,10 +89,17 @@ body {
 }
 .form {
     background-color: white;
-    height: 40em;
+    max-height: 150em;
     max-width: 80%;
     border-radius: 16px;
     margin: 4em auto;
+    padding: 2em;
+    font-size: 1em;
+}
+.form img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 16px;
 }
 footer {
     background-color: #373535;
@@ -102,6 +120,9 @@ footer p {
     .foot1 a {
         font-size: 12px;
     }
+    .form {
+        font-size: 8px;
+    }
     .head img {
         width: 45px;
         height: 45px;
@@ -111,6 +132,9 @@ footer p {
     }
     .container.head a {
         font-size: 10px;
+        margin-left: 0.5em;
+        margin-right: 0;
+        padding-right: 0;
     }
     footer p {
         font-size: 10px;
