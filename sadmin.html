@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список администраторов</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container" style="margin-top: 2em;">
+        <h3 class="text-center">Список администраторов</h3>
+        <a href="admin.html" class="btn btn-secondary mb-3">Назад</a>
+        <button onclick="openAddAdminModal()" class="btn btn-primary mb-3 float-right">Добавить администратора</button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Логин</th>
+                    <th>Пароль</th>
+                    <th>Удаление</th>
+                </tr>
+            </thead>
+            <tbody id="adminsList"></tbody>
+        </table>
+    </div>
+
+    <!-- Модальное окно для добавления -->
+    <div class="modal fade" id="addAdminModal" tabindex="-1" role="dialog" aria-labelledby="addAdminModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAdminModalLabel">Добавить администратора</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="adminForm" action="#" method="POST">
+                        <div class="mb-3">
+                            <input type="text" id="adminname" name="username" class="form-control" placeholder="Логин">
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" id="adminpassword" name="password" class="form-control" placeholder="Пароль">
+                        </div>
+                        <button type="submit" class="btn btn-danger d-block mx-auto">Добавить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для подтверждения удаления -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Подтверждение удаления</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Вы действительно хотите удалить данного администратора?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="deleteAdmin()">Да</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let admins = JSON.parse(localStorage.getItem('admins')) || [];
+            const adminsList = document.getElementById('adminsList');
+            
+            // Функция для подтверждения удаления 
+            window.confirmDelete = function(username) {
+                $('#confirmDeleteModal').modal('show');
+                document.getElementById('confirmDeleteModal').dataset.username = username;
+            };
+    
+            // Функция для удаления 
+            window.deleteAdmin = function() {
+                const username = document.getElementById('confirmDeleteModal').dataset.username;
+                admins = admins.filter(function(admin) {
+                    return admin.username !== username;
+                });
+                localStorage.setItem('admins', JSON.stringify(admins));
+                renderAdmins();
+                alert('Администратор успешно удален!');
+                $('#confirmDeleteModal').modal('hide');
+            };
+            
+            // Функция для отображения списка администраторов
+            function renderAdmins() {
+                adminsList.innerHTML = '';
+                admins.forEach(function(admin) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${admin.username}</td>
+                        <td>${admin.password}</td>
+                        <td><button class="btn btn-danger" onclick="confirmDelete('${admin.username}')">Удалить</button></td>
+                    `;
+                    adminsList.appendChild(row);
+                });
+            }
+            renderAdmins();
+    
+            // Обработчик события отправки формы для добавления админа
+            const form = document.getElementById('adminForm');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const usernameInput = document.getElementById('adminname');
+                const passwordInput = document.getElementById('adminpassword');
+                const enteredUsername = usernameInput.value.trim();
+                const enteredPassword = passwordInput.value.trim();
+                if (!enteredUsername || !enteredPassword) {
+                    alert('Пожалуйста, введите имя и пароль администратора');
+                    return;
+                }
+                const isUserExist = admins.some(user => user.username === enteredUsername && user.password === enteredPassword);
+                if (isUserExist) {
+                    alert('Администратор уже добавлен!');
+                } else {
+                    admins.push({ username: enteredUsername, password: enteredPassword });
+                    localStorage.setItem('admins', JSON.stringify(admins));
+                    renderAdmins();
+                    alert('Администратор успешно добавлен!');
+                    $('#addAdminModal').modal('hide');
+                    usernameInput.value = '';
+                    passwordInput.value = '';
+                }
+            });
+        });
+    
+        // Функция для открытия модального окна добавления админа
+        function openAddAdminModal() {
+            $('#addAdminModal').modal('show');
+        }
+    </script>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
