@@ -137,44 +137,45 @@
             };
 
             // Функция для редактирования администратора
-            window.editAdmin = function(username) {
-                const admin = admins.find(admin => admin.username === username);
-                $('#editAdminModal').modal('show');
-                document.getElementById('editadminname').value = admin.username;
-                document.getElementById('editadminrealname').value = admin.realname;
-                document.getElementById('editadminpassword').value = admin.password;
-                document.getElementById('editadminphone').value = admin.phone;
-                document.getElementById('editAdminForm').onsubmit = function(event) {
-                    event.preventDefault();
-                    const nameInput = document.getElementById('editadminname');
-                    const realnameInput = document.getElementById('editadminrealname');
-                    const passwordInput = document.getElementById('editadminpassword');
-                    const phoneInput = document.getElementById('editadminphone');
-                    const enteredName = nameInput.value.trim();
-                    const enteredRealname = realnameInput.value.trim();
-                    const enteredPassword = passwordInput.value.trim();
-                    const enteredPhone = phoneInput.value.trim();
-                    if (!enteredName || !enteredRealname || !enteredPassword || !enteredPhone) {
-                        alert('Пожалуйста, заполните все поля');
-                        return;
-                    }
-                    if (enteredPhone.length !== 11) {
-                        alert('Пожалуйста, введите корректный номер телефона! (11 цифр)');
-                        return;
-                    }
-                    const isUsernameExist = admins.some(admin => admin.username === enteredName && admin.username !== username);
-                    if (isUsernameExist) {
-                        alert('Администратор с таким логином уже существует!');
-                        return;
-                    }
-                    const index = admins.findIndex(admin => admin.username === username);
-                    admins[index] = { username: enteredName, realname: enteredRealname, password: enteredPassword, phone: enteredPhone };
-                    localStorage.setItem('admins', JSON.stringify(admins));
-                    renderAdmins();
-                    alert('Администратор успешно отредактирован!');
-                    $('#editAdminModal').modal('hide');
-                };
-            };
+window.editAdmin = function(username) {
+    const admin = admins.find(admin => admin.username === username);
+    $('#editAdminModal').modal('show');
+    document.getElementById('editadminname').value = admin.username;
+    document.getElementById('editadminrealname').value = admin.realname;
+    document.getElementById('editadminpassword').value = admin.password;
+    document.getElementById('editadminphone').value = admin.phone;
+    document.getElementById('editAdminForm').onsubmit = function(event) {
+        event.preventDefault();
+        const nameInput = document.getElementById('editadminname');
+        const realnameInput = document.getElementById('editadminrealname');
+        const passwordInput = document.getElementById('editadminpassword');
+        const phoneInput = document.getElementById('editadminphone');
+        const enteredName = nameInput.value.trim();
+        const enteredRealname = realnameInput.value.trim();
+        const enteredPassword = passwordInput.value.trim();
+        const enteredPhone = phoneInput.value.trim();
+        if (!enteredName || !enteredRealname || !enteredPassword || !enteredPhone) {
+            alert('Пожалуйста, заполните все поля');
+            return;
+        }
+        if (!/^\d{11}$/.test(enteredPhone)) {
+            alert('Пожалуйста, введите корректный номер телефона! (11 цифр)');
+            return;
+        }
+        const isUsernameExist = admins.some(admin => admin.username === enteredName && admin.username !== username);
+        if (isUsernameExist) {
+            alert('Администратор с таким логином уже существует!');
+            return;
+        }
+        const index = admins.findIndex(admin => admin.username === username);
+        admins[index] = { username: enteredName, realname: enteredRealname, password: enteredPassword, phone: enteredPhone };
+        localStorage.setItem('admins', JSON.stringify(admins));
+        renderAdmins();
+        alert('Администратор успешно отредактирован!');
+        $('#editAdminModal').modal('hide');
+    };
+};
+
 
             // Функция для отображения списка администраторов
             function renderAdmins() {
