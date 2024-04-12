@@ -16,6 +16,9 @@
                 <tr>
                     <th>Логин</th>
                     <th>Пароль</th>
+                    <th>Имя</th>
+                    <th>Номер телефона</th>
+                    <th>Редактирование</th>
                     <th>Удаление</th>
                 </tr>
             </thead>
@@ -23,7 +26,7 @@
         </table>
     </div>
 
-    <!-- Модальное окно для добавления -->
+    <!-- Модальное окно для добавления администратора -->
     <div class="modal fade" id="addAdminModal" tabindex="-1" role="dialog" aria-labelledby="addAdminModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -34,14 +37,53 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="adminForm" action="#" method="POST">
+                    <form id="addAdminForm" action="#" method="POST">
                         <div class="mb-3">
                             <input type="text" id="adminname" name="username" class="form-control" placeholder="Логин">
                         </div>
                         <div class="mb-3">
                             <input type="password" id="adminpassword" name="password" class="form-control" placeholder="Пароль">
                         </div>
+                        <div class="mb-3">
+                            <input type="text" id="adminrealname" name="realname" class="form-control" placeholder="Имя">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" id="adminphone" name="phone" class="form-control" placeholder="Номер телефона (только цифры)">
+                            <div id="phoneError" class="invalid-feedback"></div>
+                        </div>
                         <button type="submit" class="btn btn-danger d-block mx-auto">Добавить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для редактирования администратора -->
+    <div class="modal fade" id="editAdminModal" tabindex="-1" role="dialog" aria-labelledby="editAdminModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editAdminModalLabel">Редактировать администратора</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editAdminForm" action="#" method="POST">
+                        <div class="mb-3">
+                            <input type="text" id="editadminname" name="username" class="form-control" placeholder="Логин">
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" id="editadminpassword" name="password" class="form-control" placeholder="Пароль">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" id="editadminrealname" name="realname" class="form-control" placeholder="Имя">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" id="editadminphone" name="phone" class="form-control" placeholder="Номер телефона (только цифры)">
+                            <div id="editPhoneError" class="invalid-feedback"></div>
+                        </div>
+                        <button type="submit" class="btn btn-danger d-block mx-auto">Сохранить</button>
                     </form>
                 </div>
             </div>
@@ -73,13 +115,15 @@
         document.addEventListener('DOMContentLoaded', function() {
             let admins = JSON.parse(localStorage.getItem('admins')) || [];
             const adminsList = document.getElementById('adminsList');
-            
+            const phoneInput = document.getElementById('adminphone');
+            const phoneError = document.getElementById('phoneError');
+
             // Функция для подтверждения удаления 
             window.confirmDelete = function(username) {
                 $('#confirmDeleteModal').modal('show');
                 document.getElementById('confirmDeleteModal').dataset.username = username;
             };
-    
+
             // Функция для удаления 
             window.deleteAdmin = function() {
                 const username = document.getElementById('confirmDeleteModal').dataset.username;
@@ -91,7 +135,47 @@
                 alert('Администратор успешно удален!');
                 $('#confirmDeleteModal').modal('hide');
             };
-            
+
+            // Функция для редактирования администратора
+            window.editAdmin = function(username) {
+                const admin = admins.find(admin => admin.username === username);
+                $('#editAdminModal').modal('show');
+                document.getElementById('editadminname').value = admin.username;
+                document.getElementById('editadminrealname').value = admin.realname;
+                document.getElementById('editadminpassword').value = admin.password;
+                document.getElementById('editadminphone').value = admin.phone;
+                document.getElementById('editAdminForm').onsubmit = function(event) {
+                    event.preventDefault();
+                    const nameInput = document.getElementById('editadminname');
+                    const realnameInput = document.getElementById('editadminrealname');
+                    const passwordInput = document.getElementById('editadminpassword');
+                    const phoneInput = document.getElementById('editadminphone');
+                    const enteredName = nameInput.value.trim();
+                    const enteredRealname = realnameInput.value.trim();
+                    const enteredPassword = passwordInput.value.trim();
+                    const enteredPhone = phoneInput.value.trim();
+                    if (!enteredName || !enteredRealname || !enteredPassword || !enteredPhone) {
+                        alert('Пожалуйста, заполните все поля');
+                        return;
+                    }
+                    if (enteredPhone.length !== 11) {
+                        alert('Пожалуйста, введите корректный номер телефона! (11 цифр)');
+                        return;
+                    }
+                    const isUsernameExist = admins.some(admin => admin.username === enteredName && admin.username !== username);
+                    if (isUsernameExist) {
+                        alert('Администратор с таким логином уже существует!');
+                        return;
+                    }
+                    const index = admins.findIndex(admin => admin.username === username);
+                    admins[index] = { username: enteredName, realname: enteredRealname, password: enteredPassword, phone: enteredPhone };
+                    localStorage.setItem('admins', JSON.stringify(admins));
+                    renderAdmins();
+                    alert('Администратор успешно отредактирован!');
+                    $('#editAdminModal').modal('hide');
+                };
+            };
+
             // Функция для отображения списка администраторов
             function renderAdmins() {
                 adminsList.innerHTML = '';
@@ -100,43 +184,68 @@
                     row.innerHTML = `
                         <td>${admin.username}</td>
                         <td>${admin.password}</td>
+                        <td>${admin.realname}</td>
+                        <td>${admin.phone}</td>
+                        <td>
+                            <button class="btn btn-primary" onclick="editAdmin('${admin.username}')">Редактировать</button>
+                        </td>
                         <td><button class="btn btn-danger" onclick="confirmDelete('${admin.username}')">Удалить</button></td>
                     `;
                     adminsList.appendChild(row);
                 });
             }
             renderAdmins();
-    
+
             // Обработчик события отправки формы для добавления админа
-            const form = document.getElementById('adminForm');
-            form.addEventListener('submit', function(event) {
+            const addForm = document.getElementById('addAdminForm');
+            addForm.addEventListener('submit', function(event) {
                 event.preventDefault();
                 const usernameInput = document.getElementById('adminname');
+                const realnameInput = document.getElementById('adminrealname');
                 const passwordInput = document.getElementById('adminpassword');
+                const phoneInput = document.getElementById('adminphone');
                 const enteredUsername = usernameInput.value.trim();
+                const enteredRealname = realnameInput.value.trim();
                 const enteredPassword = passwordInput.value.trim();
-                if (!enteredUsername || !enteredPassword) {
-                    alert('Пожалуйста, введите имя и пароль администратора');
+                const enteredPhone = phoneInput.value.trim();
+                if (!enteredUsername || !enteredRealname || !enteredPassword || !enteredPhone) {
+                    alert('Пожалуйста, заполните все поля!');
                     return;
                 }
-                const isUserExist = admins.some(user => user.username === enteredUsername && user.password === enteredPassword);
+                const isUserExist = admins.some(user => user.username === enteredUsername);
                 if (isUserExist) {
-                    alert('Администратор уже добавлен!');
+                    alert('Администратор с таким логином уже существует!');
+                } else if (!/^\d{11}$/.test(enteredPhone)) {
+                    alert('Пожалуйста, введите корректный номер телефона! (11 цифр)');
                 } else {
-                    admins.push({ username: enteredUsername, password: enteredPassword });
+                    admins.push({ username: enteredUsername, realname: enteredRealname, password: enteredPassword, phone: enteredPhone });
                     localStorage.setItem('admins', JSON.stringify(admins));
                     renderAdmins();
                     alert('Администратор успешно добавлен!');
                     $('#addAdminModal').modal('hide');
                     usernameInput.value = '';
+                    realnameInput.value = '';
                     passwordInput.value = '';
+                    phoneInput.value = '';
+                }
+            });
+
+            // Обработчик событий для поля ввода номера телефона
+            phoneInput.addEventListener('input', function() {
+                const phoneNumber = phoneInput.value.trim();
+                if (!/^\d{11}$/.test(phoneNumber)) {
+                    phoneError.innerText = 'Пожалуйста, введите корректный номер телефона! (11 цифр)';
+                } else {
+                    phoneError.innerText = '';
                 }
             });
         });
-    
+
         // Функция для открытия модального окна добавления админа
         function openAddAdminModal() {
             $('#addAdminModal').modal('show');
+            // Сброс сообщений об ошибках
+            document.getElementById('phoneError').innerText = '';
         }
     </script>
     
