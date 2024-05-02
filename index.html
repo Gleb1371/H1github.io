@@ -70,7 +70,7 @@
                         <div id="successAlert" class="success-alert"></div>
                     </div>
                 </div>
-                <script>
+                <!-- <script>
                     const form = document.querySelector('.form');
                     const nameInput = document.getElementById('name');
                     const phoneInput = document.getElementById('phone');
@@ -95,9 +95,9 @@
                                 nameInput.classList.remove('error');
                                 phoneInput.classList.remove('error');
                                 if (!/^\+?[0-9\s\-\(\)]+$/.test(phone) || phone.replace(/[^\d]/g, '').length !== 11) {
-                                showError("Некорректный номер телефона!");
-                                hasError = true;
-                            }
+                                    showError("Некорректный номер телефона!");
+                                    hasError = true;
+                                }
                             }
                             if (!hasError) {
                                 // Проверяем, существуют ли уже такие данные в объекте classes
@@ -125,7 +125,61 @@
                         errorAlert.textContent = "";
                         errorAlert.classList.remove('active');
                     }
-                </script>
+                </script> -->
+                <script>
+                    const form = document.querySelector('.form');
+                    const nameInput = document.getElementById('name');
+                    const phoneInput = document.getElementById('phone');
+                    const errorAlert = document.getElementById('errorAlert');
+                    const successAlert = document.getElementById('successAlert');
+                
+                    form.addEventListener("click", async function (event) {
+                        if (event.target.matches(".btn")) {
+                            const name = nameInput.value.trim();
+                            const phone = phoneInput.value.trim();
+                            let hasError = false;
+                
+                            if (name.length === 0 || phone.length === 0) {
+                                showError("Введите данные!");
+                                hasError = true;
+                            } else {
+                                nameInput.classList.remove('error');
+                                phoneInput.classList.remove('error');
+                                if (!/^\d+$/.test(phone) || phone.length !== 11) {
+                                    showError("Некорректный номер телефона!");
+                                    hasError = true;
+                                }
+                            }
+                
+                            if (!hasError) {
+                                try {
+                                    const response = await fetch('/clients', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            first_name: name,
+                                            phone_number: phone,
+                                            role: 'classes' // Здесь можно указать роль клиента
+                                        })
+                                    });
+                
+                                    if (!response.ok) {
+                                        const errorMessage = await response.text();
+                                        showError(errorMessage);
+                                        return;
+                                    }
+                
+                                    const data = await response.json();
+                                    showSuccess(data.message);
+                                } catch (error) {
+                                    console.error('Ошибка:', error);
+                                    showError('Произошла ошибка при отправке запроса');
+                                }
+                            }
+                        }
+                    });
             </div>
         </div>
     </div>
