@@ -94,10 +94,10 @@
                             } else {
                                 nameInput.classList.remove('error');
                                 phoneInput.classList.remove('error');
-                            }
-                            if (!/^\+?[0-9\s\-\(\)]+$/.test(phone) || phone.replace(/[^\d]/g, '').length !== 11) {
+                                if (!/^\+?[0-9\s\-\(\)]+$/.test(phone) || phone.replace(/[^\d]/g, '').length !== 11) {
                                 showError("Некорректный номер телефона!");
                                 hasError = true;
+                            }
                             }
                             if (!hasError) {
                                 // Проверяем, существуют ли уже такие данные в объекте classes
