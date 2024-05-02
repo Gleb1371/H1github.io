@@ -180,6 +180,20 @@
                             }
                         }
                     });
+                    function showError(message) {
+                        errorAlert.textContent = message;
+                        errorAlert.classList.add('active');
+                        successAlert.textContent = "";
+                        successAlert.classList.remove('active');
+                    }
+                
+                    function showSuccess(message) {
+                        successAlert.textContent = message;
+                        successAlert.classList.add('active');
+                        errorAlert.textContent = "";
+                        errorAlert.classList.remove('active');
+                    }
+                </script>  
             </div>
         </div>
     </div>
