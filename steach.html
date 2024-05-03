@@ -10,7 +10,7 @@
     <div class="container" style="margin-top: 2em;">
         <h3 class="text-center">Список преподавателей</h3>
         <a href="admin.html" class="btn btn-secondary mb-3">Назад</a>
-        <button onclick="openAddTeacherModal()" class="btn btn-primary mb-3 float-right" data-toggle="modal" data-target="#addTeacherModal">Добавить преподавателя</button>
+        <button onclick="openAddteacherModal()" class="btn btn-primary mb-3 float-right" data-toggle="modal" data-target="#addteacherModal">Добавить преподавателя</button>
         <table class="table">
             <thead>
                 <tr>
@@ -27,17 +27,17 @@
     </div>
 
     <!-- Модальное окно для добавления преподавателя -->
-    <div class="modal fade" id="addTeacherModal" tabindex="-1" role="dialog" aria-labelledby="addTeacherModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addteacherModal" tabindex="-1" role="dialog" aria-labelledby="addteacherModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addTeacherModalLabel">Добавить преподавателя</h5>
+                    <h5 class="modal-title" id="addteacherModalLabel">Добавить преподавателя</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="addTeacherForm" action="#" method="POST">
+                    <form id="addteacherForm" action="#" method="POST">
                         <div class="mb-3">
                             <input type="text" id="username" name="username" class="form-control" placeholder="Логин">
                         </div>
@@ -58,17 +58,17 @@
     </div>
 
     <!-- Модальное окно для редактирования преподавателя -->
-    <div class="modal fade" id="editTeacherModal" tabindex="-1" role="dialog" aria-labelledby="editTeacherModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editteacherModal" tabindex="-1" role="dialog" aria-labelledby="editteacherModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editTeacherModalLabel">Редактировать преподавателя</h5>
+                    <h5 class="modal-title" id="editteacherModalLabel">Редактировать преподавателя</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="editTeacherForm" action="#" method="POST">
+                    <form id="editteacherForm" action="#" method="POST">
                         <div class="mb-3">
                             <input type="text" id="editusername" name="username" class="form-control" placeholder="Логин">
                         </div>
@@ -102,7 +102,7 @@
                     <p>Вы действительно хотите удалить данного преподавателя?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" onclick="deleteTeacher()">Да</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteteacher()">Да</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
                 </div>
             </div>
@@ -115,7 +115,7 @@
             const teachersList = document.getElementById('teachersList');
             
             // Функция для отображения списка преподавателей
-            function renderTeachers() {
+            function renderteachers() {
                 teachersList.innerHTML = '';
                 teachers.forEach(function(teacher) {
                     const row = document.createElement('tr');
@@ -124,13 +124,13 @@
                         <td>${teacher.password}</td>
                         <td>${teacher.fullname}</td>
                         <td>${teacher.phone}</td>
-                        <td><button class="btn btn-primary" onclick="editTeacher('${teacher.username}')">Редактировать</button></td>
+                        <td><button class="btn btn-primary" onclick="editteacher('${teacher.username}')">Редактировать</button></td>
                         <td><button class="btn btn-danger" onclick="confirmDelete('${teacher.username}')">Удалить</button></td>
                     `;
                     teachersList.appendChild(row);
                 });
             }
-            renderTeachers();
+            renderteachers();
     
             // Функция для подтверждения удаления преподавателя
             window.confirmDelete = function(username) {
@@ -139,31 +139,31 @@
             };
     
             // Функция для удаления преподавателя
-            window.deleteTeacher = function() {
+            window.deleteteacher = function() {
                 const username = document.getElementById('confirmDeleteModal').dataset.username;
                 teachers = teachers.filter(function(teacher) {
                     return teacher.username !== username;
                 });
                 localStorage.setItem('teachers', JSON.stringify(teachers));
-                renderTeachers();
+                renderteachers();
                 alert('Преподаватель успешно удален!');
                 $('#confirmDeleteModal').modal('hide');
             };
     
             // Функция для открытия модального окна добавления преподавателя
-            function openAddTeacherModal() {
-                $('#addTeacherModal').modal('show');
+            function openAddteacherModal() {
+                $('#addteacherModal').modal('show');
             }
 
             // Функция для открытия модального окна редактирования преподавателя
-            window.editTeacher = function(username) {
+            window.editteacher = function(username) {
                 const teacher = teachers.find(teacher => teacher.username === username);
-                $('#editTeacherModal').modal('show');
+                $('#editteacherModal').modal('show');
                 document.getElementById('editusername').value = teacher.username;
                 document.getElementById('editfullname').value = teacher.fullname;
                 document.getElementById('editphone').value = teacher.phone;
                 document.getElementById('editpassword').value = teacher.password;
-                document.getElementById('editTeacherForm').onsubmit = function(event) {
+                document.getElementById('editteacherForm').onsubmit = function(event) {
                     event.preventDefault();
                     const usernameInput = document.getElementById('editusername');
                     const fullnameInput = document.getElementById('editfullname');
@@ -190,14 +190,14 @@
                     const index = teachers.findIndex(teacher => teacher.username === username);
                     teachers[index] = { username: enteredUsername, fullname: enteredFullname, phone: enteredPhone, password: enteredPassword };
                     localStorage.setItem('teachers', JSON.stringify(teachers));
-                    renderTeachers();
+                    renderteachers();
                     alert('Преподаватель успешно отредактирован!');
-                    $('#editTeacherModal').modal('hide');
+                    $('#editteacherModal').modal('hide');
                 };
             };
 
             // Обработчик события отправки формы для добавления преподавателя
-            const addForm = document.getElementById('addTeacherForm');
+            const addForm = document.getElementById('addteacherForm');
             addForm.addEventListener('submit', function(event) {
                 event.preventDefault();
                 const usernameInput = document.getElementById('username');
@@ -223,9 +223,9 @@
                 } else {
                     teachers.push({ username: enteredUsername, fullname: enteredFullname, phone: enteredPhone, password: enteredPassword });
                     localStorage.setItem('teachers', JSON.stringify(teachers));
-                    renderTeachers();
+                    renderteachers();
                     alert('Преподаватель успешно добавлен!');
-                    $('#addTeacherModal').modal('hide');
+                    $('#addteacherModal').modal('hide');
                     usernameInput.value = '';
                     fullnameInput.value = '';
                     phoneInput.value = '';
@@ -240,6 +240,14 @@
                 // Проверяем, что длина номера телефона равна 11 символам и что он состоит только из цифр
                 return cleanedPhoneNumber.length === 11 && /^\d+$/.test(cleanedPhoneNumber);
             }
+
+            // Функция для ограничения ввода в поле номера телефона только цифр
+            const phoneInputs = document.querySelectorAll('input[name="phone"]');
+            phoneInputs.forEach(input => {
+                input.addEventListener('input', function(event) {
+                    this.value = this.value.replace(/\D/g, ''); // Заменяем все, кроме цифр, на пустую строку
+                });
+            });
         });
     </script>
     
